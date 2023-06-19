@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     var score = 0
     var time =  0
     var timer = Timer()
+    var hideTimer = Timer()
+    var kennyArray = [UIImageView]()
     
     // Views
     
@@ -68,10 +70,18 @@ class ViewController: UIViewController {
         kennyImageView8.addGestureRecognizer(tapGestureRecognizer8)
         kennyImageView9.addGestureRecognizer(tapGestureRecognizer9)
         
-        // Timer
+        
+        kennyArray = [kennyImageView1,kennyImageView2,kennyImageView3,kennyImageView4,kennyImageView5,kennyImageView6,kennyImageView7,kennyImageView8,kennyImageView9]
+        
+        hideKenny()
+        
+        // Timers
+        
         time = 10
         timeLabel.text = "\(time)"
+        
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(showRandomKenny), userInfo: nil, repeats: true)
         
        
     }
@@ -85,20 +95,22 @@ class ViewController: UIViewController {
     
     // Count down to Time
     @objc func countDown(){
-
         if time <= 0{
-            timer.invalidate()
             
+            // turn of timers
+            timer.invalidate()
+            hideTimer.invalidate()
+            
+            // hides kennys on screen when time is up
+            hideKenny()
             
             // Alert
-            
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "OK", style: .cancel,handler: nil)
             let replayButton = UIAlertAction(title: "Replay", style: .default,handler: replayButtonHandler)
             alert.addAction(okButton)
             alert.addAction(replayButton)
             self.present(alert, animated: true)
-            
         }else{
             time -= 1
             timeLabel.text = "\(time)"
@@ -106,12 +118,24 @@ class ViewController: UIViewController {
         
     }
     
+
+    // Method that works when pressed again
     func replayButtonHandler(action:UIAlertAction){
-        print("oldu")
     }
     
+    // Hide kenny
+     func hideKenny(){
+        for kenny in kennyArray {
+            kenny.isHidden = true
+        }
+    }
     
-    
+    // Show Kenny
+    @objc func showRandomKenny(){
+        hideKenny()
+        let randomNumber = Int(arc4random_uniform(UInt32(kennyArray.count-1)))
+        kennyArray[randomNumber].isHidden = false
+    }
     
 }
 
