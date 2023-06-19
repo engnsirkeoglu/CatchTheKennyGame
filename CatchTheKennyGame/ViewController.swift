@@ -8,16 +8,17 @@
 import UIKit
 
 class ViewController: UIViewController {
-    // Score Variable
-    
+    // Variables
     var score = 0
+    var time =  0
+    var timer = Timer()
     
-    // Label
+    // Views
+    
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var highScoreLabel: UILabel!
-    
-    // Image View
+  
     @IBOutlet weak var kennyImageView1: UIImageView!
     @IBOutlet weak var kennyImageView2: UIImageView!
     @IBOutlet weak var kennyImageView3: UIImageView!
@@ -28,11 +29,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var kennyImageView8: UIImageView!
     @IBOutlet weak var kennyImageView9: UIImageView!
     
+  
     override func viewDidLoad() {
         super.viewDidLoad()
         
         scoreLabel.text = "Score: \(score)"
         
+        // Images
         kennyImageView1.isUserInteractionEnabled = true
         kennyImageView2.isUserInteractionEnabled = true
         kennyImageView3.isUserInteractionEnabled = true
@@ -43,6 +46,7 @@ class ViewController: UIViewController {
         kennyImageView8.isUserInteractionEnabled = true
         kennyImageView9.isUserInteractionEnabled = true
         
+        // TapGestureRecognizer
         let tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(increaseScore))
         let tapGestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(increaseScore))
         let tapGestureRecognizer3 = UITapGestureRecognizer(target: self, action: #selector(increaseScore))
@@ -53,6 +57,7 @@ class ViewController: UIViewController {
         let tapGestureRecognizer8 = UITapGestureRecognizer(target: self, action: #selector(increaseScore))
         let tapGestureRecognizer9 = UITapGestureRecognizer(target: self, action: #selector(increaseScore))
         
+        // Add tapGestureRecognizer to images
         kennyImageView1.addGestureRecognizer(tapGestureRecognizer1)
         kennyImageView2.addGestureRecognizer(tapGestureRecognizer2)
         kennyImageView3.addGestureRecognizer(tapGestureRecognizer3)
@@ -62,7 +67,12 @@ class ViewController: UIViewController {
         kennyImageView7.addGestureRecognizer(tapGestureRecognizer7)
         kennyImageView8.addGestureRecognizer(tapGestureRecognizer8)
         kennyImageView9.addGestureRecognizer(tapGestureRecognizer9)
-       
+        
+        // Timer
+        time = 10
+        timeLabel.text = "\(time)"
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
+        
        
     }
     
@@ -72,6 +82,35 @@ class ViewController: UIViewController {
         score += 1
         scoreLabel.text = "Score: \(score)"
     }
+    
+    // Count down to Time
+    @objc func countDown(){
+
+        if time <= 0{
+            timer.invalidate()
+            
+            
+            // Alert
+            
+            let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
+            let okButton = UIAlertAction(title: "OK", style: .cancel,handler: nil)
+            let replayButton = UIAlertAction(title: "Replay", style: .default,handler: replayButtonHandler)
+            alert.addAction(okButton)
+            alert.addAction(replayButton)
+            self.present(alert, animated: true)
+            
+        }else{
+            time -= 1
+            timeLabel.text = "\(time)"
+        }
+        
+    }
+    
+    func replayButtonHandler(action:UIAlertAction){
+        print("oldu")
+    }
+    
+    
     
     
 }
