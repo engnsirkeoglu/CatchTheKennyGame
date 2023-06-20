@@ -11,9 +11,11 @@ class ViewController: UIViewController {
     // Variables
     var score = 0
     var time =  0
+    var highscore = 0
     var timer = Timer()
     var hideTimer = Timer()
     var kennyArray = [UIImageView]()
+    
     
     // Views
     
@@ -34,7 +36,6 @@ class ViewController: UIViewController {
   
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         scoreLabel.text = "Score: \(score)"
         
         // Images
@@ -83,6 +84,18 @@ class ViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
         hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(showRandomKenny), userInfo: nil, repeats: true)
         
+        let storedHighScore = UserDefaults.standard.value(forKey: "highScore")
+        if storedHighScore == nil{
+            highscore = 0
+            highScoreLabel.text = "Highscore: \(highscore)"
+        }
+        
+        if let newScore = storedHighScore as? Int{
+            print("girdi buraya")
+            highscore = newScore
+            highScoreLabel.text = "Highscore: \(highscore)"
+        }
+        
        
     }
     
@@ -104,6 +117,14 @@ class ViewController: UIViewController {
             // hides kennys on screen when time is up
             hideKenny()
             
+            // Highscore
+            
+            if score > highscore {
+                highscore = score
+                highScoreLabel.text = "Highscore: \(highscore)"
+                UserDefaults.standard.set(highscore, forKey: "highScore")
+            }
+            
             // Alert
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "OK", style: .cancel,handler: nil)
@@ -121,6 +142,14 @@ class ViewController: UIViewController {
 
     // Method that works when pressed again
     func replayButtonHandler(action:UIAlertAction){
+        time = 10
+        timeLabel.text = "\(time)"
+        
+        score = 0
+        scoreLabel.text = "Score: \(score)"
+
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(showRandomKenny), userInfo: nil, repeats: true)
     }
     
     // Hide kenny
@@ -137,5 +166,6 @@ class ViewController: UIViewController {
         kennyArray[randomNumber].isHidden = false
     }
     
+
 }
 
